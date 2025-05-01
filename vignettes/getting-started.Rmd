@@ -1,0 +1,81 @@
+---
+title: "Getting Started with convNMF"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Getting Started with convNMF}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup}
+library(convNMF)
+ls("package:convNMF")
+```
+
+## 1. Generate synthetic data
+
+```{r}
+set.seed(1)
+init <- generate(
+  num_channels=5, # number of channels
+  num_samples=1000, # number of samples
+  sample_freq=1000, # number of samples per unit time
+  num_neurons=2, # number of neurons
+  len_wavelet=10, # length of spikes
+  mean_spikes=10, # expected number of spikes per unit time
+  mean_amplitude=15, # alpha/beta of Gamma (alpha, beta)
+  shape_amplitude=3, # alpha of Gamma (alpha, beta)
+  noise_std=1 # MVN(0, noise_std^2)
+)
+plot(init)
+# plot(init@data)
+# plot(init@amplitudes)
+# plot(init@wavelets)
+# plot(generate_wavelets(2, 5, 10))
+```
+
+## 2. Fit ConvNMF model
+
+```{r}
+est <- convNMF(
+  data=init@data@value, # multi-channel time-series array (NxT)
+  sample_freq=1000, # number of samples per unit time
+  num_neurons=2, # number of neurons
+  len_wavelet=10, # length of spikes
+  mean_spikes=10, # expected number of spikes per unit time
+  mean_amplitude=15, # alpha/beta of Gamma (alpha, beta)
+  shape_amplitude=3, # alpha of Gamma (alpha, beta)
+  noise_std=1, # MVN(0, noise_std^2)
+  amp_rate=5, # detect amplitudes (amp_rate) times higher than SD
+  wavelet_rank=1, # dimension reduction in SVD
+  num_iters=50, # number of iterations
+  tol=1e-04, # tolerance level
+  weight_wavelets=FALSE # re-normalize wavelets for behavioral data
+)
+plot(est)
+plot(est@lls, type="b", xlab="Iteration", ylab="Normalized Log Likelihood")
+```
+
+## 3. Evaluate the model
+
+```{r cache=TRUE}
+plot(init@data)+labs(title="Reference")+
+  plot(predict(est))+labs(title="Prediction")
+sprintf("logLik = %.2f",logLik(est))
+sprintf("%% power explained = %.2f",power_explained(est))
+sprintf("Sequenciness = %.2f",sequenciness(est))
+confusion_matrix(init, est)
+# extract_spikes(est) # based on 95% spikes
+```
+
+## 4. Estimate optimal K based on model stability
+
+```{r cache=TRUE}
+max_K <- 5
+diss_list <- rep(NA, max_K)
+for(K in 1:max_K){
+  diss_list[K] <- compute_diss_matrix(est, num_neurons=K)$mean_diss
+  print(sprintf("%d: %.2f",K,diss_list[K]))
+}
+plot(diss_list, type="b", xlab="K", ylab="Dissimiliarity")
+```
