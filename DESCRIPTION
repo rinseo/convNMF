@@ -1,6 +1,6 @@
 Package: convNMF
 Type: Package
-Title: Convolutional Non-Negative Matrix Factorization for Multi-Channel Time-Series
+Title: convNMF: Convolutional Non-Negative Matrix Factorization for Multi-Channel Time-Series
 Version: 0.1.0
 Authors@R: 
     person("Rinseo", "Park", email = "rinseo@stanford.edu", 

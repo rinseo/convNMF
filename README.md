@@ -1,6 +1,6 @@
 # convNMF
 
-This package implements convolutional NMF for spike modeling in multi-channel time-series data.
+This package implements convolutional NMF for spike sorting in multi-channel time-series data.
 
 ```r
 # Install the development version from GitHub:
