@@ -9,6 +9,7 @@ vignette: >
 
 ```{r setup}
 library(convNMF)
+install_torch() # if not installed
 ls("package:convNMF")
 ```
 
