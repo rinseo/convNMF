@@ -1,0 +1,9 @@
+pandoc: 3.1.11
+pkgdown: 2.1.2
+pkgdown_sha: ~
+articles:
+  getting-started: getting-started.html
+last_built: 2025-05-01T19:03Z
+urls:
+  reference: https://www.rinseopark.com/convNMF/reference
+  article: https://www.rinseopark.com/convNMF/articles
