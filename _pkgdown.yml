@@ -1,53 +1,53 @@
-url: https://www.rinseopark.com/convNMF
+url: https://www.rinseopark.com/convNMF/
 template:
   bootstrap: 5
   bootswatch: sandstone
-  light-switch: true
+  light-switch: yes
   math-rendering: katex
-
 navbar:
   structure:
-    left:  [home, reference, articles]
-    right: [search, github, lightswitch]
+    left:
+    - home
+    - reference
+    - articles
+    right:
+    - search
+    - github
+    - lightswitch
   components:
     github:
-      text: "Github"
+      text: Github
       href: https://github.com/rinseo/convNMF
-
 reference:
-  - title: "Classes"
-    contents:
-      - Wavelets-class
-      - Amplitudes-class
-      - Data-class
-      - ConvNMF-class
-
-  - title: "Main Functions"
-    contents:
-      - convNMF
-      - compute_diss_matrix
-      - confusion_matrix
-      - diss
-      - extract_spikes
-      - generate_wavelets
-      - generate
-      - power_explained
-      - sequenciness
-
-  - title: "S4 Methods"
-    contents:
-      - logLik,ConvNMF-method
-      - plot,Wavelets-method
-      - plot,Amplitudes-method
-      - plot,Data-method
-      - plot,ConvNMF-method
-      - predict,ConvNMF-method
-      - update,ConvNMF-method
-
+- title: Classes
+  contents:
+  - Wavelets-class
+  - Amplitudes-class
+  - Data-class
+  - ConvNMF-class
+- title: Main Functions
+  contents:
+  - convNMF
+  - compute_diss_matrix
+  - confusion_matrix
+  - diss
+  - extract_spikes
+  - generate_wavelets
+  - generate
+  - power_explained
+  - sequenciness
+- title: S4 Methods
+  contents:
+  - logLik,ConvNMF-method
+  - plot,Wavelets-method
+  - plot,Amplitudes-method
+  - plot,Data-method
+  - plot,ConvNMF-method
+  - predict,ConvNMF-method
+  - update,ConvNMF-method
 articles:
-  - title: "Get Started"
-    contents:
-      - getting-started
-
+- title: Get Started
+  contents: getting-started
 development:
   mode: auto
+
