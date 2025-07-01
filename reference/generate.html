@@ -51,6 +51,7 @@
 <span>  <span class="va">sample_freq</span>,</span>
 <span>  <span class="va">num_neurons</span>,</span>
 <span>  <span class="va">len_wavelet</span>,</span>
+<span>  warp <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="op">-</span><span class="va">x</span><span class="op">)</span> <span class="op">+</span> <span class="fl">1</span>,</span>
 <span>  mean_spikes <span class="op">=</span> <span class="fl">10</span>,</span>
 <span>  mean_amplitude <span class="op">=</span> <span class="fl">15</span>,</span>
 <span>  shape_amplitude <span class="op">=</span> <span class="fl">3</span>,</span>
@@ -80,6 +81,10 @@
 
 <dt id="arg-len-wavelet">len_wavelet<a class="anchor" aria-label="anchor" href="#arg-len-wavelet"></a></dt>
 <dd><p>Length of spatial wavelet (in samples).</p></dd>
+
+
+<dt id="arg-warp">warp<a class="anchor" aria-label="anchor" href="#arg-warp"></a></dt>
+<dd><p>Function for time warping.</p></dd>
 
 
 <dt id="arg-mean-spikes">mean_spikes<a class="anchor" aria-label="anchor" href="#arg-mean-spikes"></a></dt>
