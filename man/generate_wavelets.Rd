@@ -4,7 +4,12 @@
 \alias{generate_wavelets}
 \title{Generate Random Spatial Wavelets}
 \usage{
-generate_wavelets(num_neurons, num_channels, len_wavelet)
+generate_wavelets(
+  num_neurons,
+  num_channels,
+  len_wavelet,
+  warp = function(x) -exp(-x) + 1
+)
 }
 \arguments{
 \item{num_neurons}{Number of neurons to simulate.}
@@ -12,6 +17,8 @@ generate_wavelets(num_neurons, num_channels, len_wavelet)
 \item{num_channels}{Number of channels (electrodes/tasks).}
 
 \item{len_wavelet}{Length of each spatial wavelet (in samples).}
+
+\item{warp}{Function for time warping.}
 }
 \value{
 A \code{\link{Wavelets-class}} object.

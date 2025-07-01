@@ -10,6 +10,7 @@ generate(
   sample_freq,
   num_neurons,
   len_wavelet,
+  warp = function(x) -exp(-x) + 1,
   mean_spikes = 10,
   mean_amplitude = 15,
   shape_amplitude = 3,
@@ -26,6 +27,8 @@ generate(
 \item{num_neurons}{Number of neurons to simulate.}
 
 \item{len_wavelet}{Length of spatial wavelet (in samples).}
+
+\item{warp}{Function for time warping.}
 
 \item{mean_spikes}{Expected number of spikes per unit time.}
 

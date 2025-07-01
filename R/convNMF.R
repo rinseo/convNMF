@@ -449,7 +449,7 @@ map_estimate_fast <- function(wavelets, amplitudes, data,
 #' @param data Matrix of dimensions \code{num_channels} × \code{num_samples}.
 #' @param sample_freq Sampling frequency (Hz).
 #' @param num_neurons Number of neurons to be fitted.
-#' @param len_waveletf Length of spatial wavelet (in samples).
+#' @param len_wavelet Length of spatial wavelet (in samples).
 #' @param warp Function for time warping.
 #' @param mean_spikes Expected number of spikes per unit time.
 #' @param mean_amplitude Mean of the Gamma distribution for amplitudes.

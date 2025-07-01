@@ -9,6 +9,7 @@ convNMF(
   sample_freq,
   num_neurons,
   len_wavelet,
+  warp = function(x) -exp(-x) + 1,
   mean_spikes = 10,
   mean_amplitude = 15,
   shape_amplitude = 3,
@@ -28,6 +29,10 @@ convNMF(
 
 \item{num_neurons}{Number of neurons to be fitted.}
 
+\item{len_wavelet}{Length of spatial wavelet (in samples).}
+
+\item{warp}{Function for time warping.}
+
 \item{mean_spikes}{Expected number of spikes per unit time.}
 
 \item{mean_amplitude}{Mean of the Gamma distribution for amplitudes.}
@@ -43,8 +48,6 @@ convNMF(
 \item{num_iters}{Maximum number of MAP iterations.}
 
 \item{tol}{Convergence tolerance.}
-
-\item{len_waveletf}{Length of spatial wavelet (in samples).}
 }
 \value{
 A fitted \code{\link{ConvNMF-class}} object.
