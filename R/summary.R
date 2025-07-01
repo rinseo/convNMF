@@ -11,6 +11,7 @@ setGeneric("diss", function(object1, object2) standardGeneric("diss"))
 setGeneric("compute_diss_matrix", function(object, ...) standardGeneric("compute_diss_matrix"))
 setGeneric("confusion_matrix", function(object1, object2) standardGeneric("confusion_matrix"))
 
+# version 2025.05.01
 #---------------#
 # Model Summary #
 #---------------#

@@ -3,6 +3,7 @@
 
 NULL
 
+# version 2025.07.01
 #--------------------#
 # Data Visualization #
 #--------------------#
@@ -116,9 +117,10 @@ setMethod("plot",
               # Adjust x/y scales
               scale_x_continuous(expand=expansion(mult=c(.0,.02)))+ # add 2% at the end
               scale_y_continuous(breaks=0:x@num_neurons, # break every integer
-                                 label=function(i) parse(text=paste0("italic(A)[",
-                                                                    x@num_neurons-as.integer(i),
-                                                                    "]")), # revert back to k
+                                 label=parse(text=paste0(
+                                   "italic(A)[",
+                                   x@num_neurons-as.integer(0:x@num_neurons),
+                                   "]")), # revert back to k
                                  expand=expansion(mult=c(.05,0)))+ # add 5% at zero
               guides(color="none")+
               theme_classic()+
