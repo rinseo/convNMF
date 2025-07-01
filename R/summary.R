@@ -11,10 +11,19 @@ setGeneric("diss", function(object1, object2) standardGeneric("diss"))
 setGeneric("compute_diss_matrix", function(object, ...) standardGeneric("compute_diss_matrix"))
 setGeneric("confusion_matrix", function(object1, object2) standardGeneric("confusion_matrix"))
 
-# version 2025.05.01
+# version 2025.07.01
 #---------------#
 # Model Summary #
 #---------------#
+# ensure3D <- function(tensor) {
+#   # Ensure that input tensor is 3D array
+#   shape <- tensor$shape
+#   if (length(shape) == 2) {
+#     return(tensor$unsqueeze(1))  # Add K dimension
+#   }
+#   return(tensor)
+# }
+
 #' Extract Spikes from ConvNMF Model
 #'
 #' Identifies spike occurrences based on the fitted wavelets and amplitudes.
@@ -34,7 +43,14 @@ setMethod("extract_spikes",
             } else{
               wavelets <- object@wavelets@value
             }
-            spike_channels <- melt(wavelets) %>% # Var1 (k) x Var2 (n) x Var3 (d) x value
+            # For n=1 wavelets
+            long_data <- melt(wavelets)
+            if(!("Var3" %in% names(long_data))) {
+              long_data <- long_data %>% mutate(Var3=Var2, # d
+                                                Var2=Var1, # n
+                                                Var1=1)    # k
+            }
+            spike_channels <- long_data %>% # Var1 (k) x Var2 (n) x Var3 (d) x value
               rename(k=Var1, n=Var2, d=Var3) %>% 
               group_by(n) %>% # per channel 
               filter(abs(value)>=quantile(abs(value),spike_threshold)) %>% 
@@ -109,7 +125,7 @@ setMethod("predict",
             } else{
               wavelets <- object@wavelets@value
             }
-            torch_wavelets <- torch_tensor(wavelets)
+            torch_wavelets <- ensure3D(torch_tensor(wavelets))
             torch_wavelets_flip <- torch_flip(torch_wavelets, dims=-1)
             torch_pred <- torch_conv1d(torch_amplitudes,
                                        torch_wavelets_flip$permute(c(2,1,3)),

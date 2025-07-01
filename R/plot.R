@@ -62,7 +62,13 @@ setMethod("plot",
           function(x){
             # Retrieve labels
             channel_labels <- x@channel_labels[x@channel_order]
-            melt(x@value) %>% # Var1 (k) x Var2 (n) x Var3 (d) x value
+            long_data <- melt(x@value)
+            if(!("Var3" %in% names(long_data))) {
+              long_data <- long_data %>% mutate(Var3=Var2, # d
+                                                Var2=Var1, # n
+                                                Var1=1)    # k
+            }
+            long_data %>% # Var1 (k) x Var2 (n) x Var3 (d) x value
               mutate(value=Var2-1 + value) %>% # add n-1 to value (0,N)
               ggplot(aes(x=Var3,y=value,color=as.factor(Var1), # colors specific to k
                          group=interaction(Var1,Var2)))+ # lines specific to k x n
@@ -77,7 +83,7 @@ setMethod("plot",
               geom_text(aes(label=paste0("italic(W)[",Var1,"]"),
                             x=(1+x@len_wavelet)/2,y=x@num_channels+0.5),
                         color="black",parse=TRUE,
-                        data=melt(x@value) %>% filter(Var2==1,Var3==1))+
+                        data=long_data %>% filter(Var2==1,Var3==1))+
               facet_wrap(~Var1,nrow=1)+
               geom_vline(xintercept=1,color="black", linewidth=1)+ # add border lines
               # Adjust x/y scales
