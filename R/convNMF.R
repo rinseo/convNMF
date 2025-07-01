@@ -8,6 +8,7 @@
 
 NULL
 
+# version 2025.07.01
 #-----------------#
 # Data Generation #
 #-----------------#
@@ -18,10 +19,12 @@ NULL
 #' @param num_neurons Number of neurons to simulate.
 #' @param num_channels Number of channels (electrodes/tasks).
 #' @param len_wavelet Length of each spatial wavelet (in samples).
+#' @param warp Function for time warping.
 #'
 #' @return A \code{\link{Wavelets-class}} object.
 #' @export
-generate_wavelets <- function(num_neurons, num_channels, len_wavelet){
+generate_wavelets <- function(num_neurons, num_channels, len_wavelet,
+                              warp=function(x) -exp(-x)+1){
   # Make (semi) random wavelets
   # num_neurons <- 2; num_channels <- 5; len_wavelet <- 10
   new_wavelets <- array(dim=c(num_neurons, num_channels, len_wavelet))
@@ -38,7 +41,7 @@ generate_wavelets <- function(num_neurons, num_channels, len_wavelet){
     peak_shift <- runif(1, min=0.25, max=0.75) # 0.5 = peak at midpoint
     spread_factor <- runif(1, min=0.25, max=0.75) # smaller = narrower
     z <- (dt - peak_shift * period) / (spread_factor * period)
-    warp <- function(x) exp(-x) - 1 # positive spike
+    # warp <- function(x) exp(-x) - 1 # positive spike
     # warp <- function(x) -exp(-x) + 1 # negative spike
     window <- exp(-0.5 * z**2)
     shape <- sin(2 * pi * dt / period)
@@ -73,6 +76,7 @@ generate_wavelets <- function(num_neurons, num_channels, len_wavelet){
 #' @param sample_freq Sampling frequency (Hz).
 #' @param num_neurons Number of neurons to simulate.
 #' @param len_wavelet Length of spatial wavelet (in samples).
+#' @param warp Function for time warping.
 #' @param mean_spikes Expected number of spikes per unit time.
 #' @param mean_amplitude Mean of the Gamma distribution for amplitudes.
 #' @param shape_amplitude Shape of the Gamma distribution for amplitudes.
@@ -85,6 +89,7 @@ generate <- function(num_channels, # number of channels
                      sample_freq, # number of samples per unit time
                      num_neurons, # number of neurons
                      len_wavelet, # length of spikes
+                     warp=function(x) -exp(-x)+1, # warp function
                      mean_spikes=10, # expected number of spikes per unit time
                      mean_amplitude=15, # alpha/beta of Gamma (alpha, beta)
                      shape_amplitude=3, # alpha of Gamma (alpha, beta)
@@ -93,7 +98,7 @@ generate <- function(num_channels, # number of channels
   
   # Make random wavelets
   # num_neurons <- 2; num_channels <- 5; len_wavelet <- 10
-  wavelets <- generate_wavelets(num_neurons, num_channels, len_wavelet)@value
+  wavelets <- generate_wavelets(num_neurons, num_channels, len_wavelet, warp)@value
   
   # Make random amplitudes
   # num_samples <- 1000; sample_freq <- 1000
@@ -292,7 +297,8 @@ update_amplitude_fast <- function(neuron, footprints, profiles, amplitudes, resi
 }
 
 update_wavelet_factors <- function(neuron, footprints, profiles,
-                                    amplitudes, residual, wavelet_rank=1){
+                                   amplitudes, residual, wavelet_rank=1,
+                                   warp=function(x) -exp(-x)+1){
   K <- dim(footprints)[1]
   N <- dim(footprints)[2]
   D <- dim(profiles)[3]
@@ -300,7 +306,7 @@ update_wavelet_factors <- function(neuron, footprints, profiles,
   
   # Check if the factor is used. if not, generate a random target
   if (sum(amplitudes[neuron,]) < 1){
-    target <- generate_wavelets(1, N, D)@value               # [1, N, D] 
+    target <- generate_wavelets(1, N, D, warp)@value               # [1, N, D] 
     torch_target <- torch_tensor(target) %>% torch_squeeze() # [N, D]
   } else{
     # Compute the target (inner product of residual and regressors)
@@ -338,6 +344,7 @@ update_wavelet_factors <- function(neuron, footprints, profiles,
 
 map_estimate_fast <- function(wavelets, amplitudes, data,
                               noise_std=1.0, amp_rate=5.0, wavelet_rank=1, 
+                              warp=function(x) -exp(-x)+1,
                               num_iters=20, tol=1e-06, show_progress=TRUE){
   # Fit the wavelets and amplitudes by maximum a posteriori (MAP) estimation
   K <- dim(wavelets)[1]
@@ -394,7 +401,7 @@ map_estimate_fast <- function(wavelets, amplitudes, data,
         k, footprints, profiles, amplitudes, residual, noise_std, amp_rate)
       
       new_wavelets <- update_wavelet_factors(
-        k, footprints, profiles, amplitudes, residual, wavelet_rank)
+        k, footprints, profiles, amplitudes, residual, wavelet_rank, warp)
       footprints[k,,] <- new_wavelets[[1]]
       profiles[k,,] <- new_wavelets[[2]]
       
@@ -443,6 +450,7 @@ map_estimate_fast <- function(wavelets, amplitudes, data,
 #' @param sample_freq Sampling frequency (Hz).
 #' @param num_neurons Number of neurons to be fitted.
 #' @param len_waveletf Length of spatial wavelet (in samples).
+#' @param warp Function for time warping.
 #' @param mean_spikes Expected number of spikes per unit time.
 #' @param mean_amplitude Mean of the Gamma distribution for amplitudes.
 #' @param shape_amplitude Shape of the Gamma distribution for amplitudes.
@@ -458,6 +466,7 @@ convNMF <- function(data, # multi-channel time-series array (NxT)
                     sample_freq, # number of samples per unit time
                     num_neurons, # number of neurons
                     len_wavelet, # length of spikes
+                    warp=function(x) -exp(-x)+1, # warp function
                     mean_spikes=10, # expected number of spikes per unit time
                     mean_amplitude=15, # alpha/beta of Gamma (alpha, beta)
                     shape_amplitude=3, # alpha of Gamma (alpha, beta)
@@ -483,7 +492,7 @@ convNMF <- function(data, # multi-channel time-series array (NxT)
   
   # Make random wavelets
   cat(paste0("Generating (K x N x D) = (",num_neurons," x ",num_channels," x ",len_wavelet,") wavelets.\n"))
-  wavelets <- generate_wavelets(num_neurons, num_channels, len_wavelet)@value
+  wavelets <- generate_wavelets(num_neurons, num_channels, len_wavelet, warp)@value
   
   # Make zero amplitudes
   cat(paste0("Initializing (K x T) = (",num_neurons," x ",num_samples,") amplitudes.\n"))
@@ -491,7 +500,8 @@ convNMF <- function(data, # multi-channel time-series array (NxT)
   
   # Fit the method
   est <- map_estimate_fast(wavelets, amplitudes, data,
-                           noise_std, amp_rate, wavelet_rank, num_iters, tol, show_progress)
+                           noise_std, amp_rate, wavelet_rank, warp,
+                           num_iters, tol, show_progress)
 
   # Reorder by spiking times
   times <- apply(est$wavelets, 1, function(x) which(abs(x)==max(abs(x)),arr.ind=T)[2])
@@ -548,6 +558,7 @@ convNMF <- function(data, # multi-channel time-series array (NxT)
                        sample_freq=sample_freq,
                        num_neurons=num_neurons,
                        len_wavelet=len_wavelet,
+                       warp=warp,
                        mean_spikes=mean_spikes,
                        mean_amplitude=mean_amplitude,
                        shape_amplitude=shape_amplitude,

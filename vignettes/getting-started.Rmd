@@ -21,6 +21,7 @@ init <- generate(
   num_samples=1000, # number of samples
   sample_freq=1000, # number of samples per unit time
   num_neurons=2, # number of neurons
+  warp=function(x) -exp(-x) + 1, # negative spike
   len_wavelet=10, # length of spikes
   mean_spikes=10, # expected number of spikes per unit time
   mean_amplitude=15, # alpha/beta of Gamma (alpha, beta)
@@ -37,11 +38,13 @@ plot(init)
 ## 2. Fit ConvNMF model
 
 ```{r}
+set.seed(1)
 est <- convNMF(
   data=init@data@value, # multi-channel time-series array (NxT)
   sample_freq=1000, # number of samples per unit time
   num_neurons=2, # number of neurons
   len_wavelet=10, # length of spikes
+  warp=function(x) -exp(-x) + 1, # negative spike
   mean_spikes=10, # expected number of spikes per unit time
   mean_amplitude=15, # alpha/beta of Gamma (alpha, beta)
   shape_amplitude=3, # alpha of Gamma (alpha, beta)
