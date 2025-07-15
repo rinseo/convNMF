@@ -79,7 +79,7 @@
 <span><span class="va">init</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate.html">generate</a></span><span class="op">(</span></span>
 <span>  num_channels<span class="op">=</span><span class="fl">5</span>, <span class="co"># number of channels</span></span>
 <span>  num_samples<span class="op">=</span><span class="fl">1000</span>, <span class="co"># number of samples</span></span>
-<span>  sample_freq<span class="op">=</span><span class="fl">1000</span>, <span class="co"># number of samples per unit time</span></span>
+<span>  sample_freq<span class="op">=</span><span class="fl">3000</span>, <span class="co"># number of samples per unit time</span></span>
 <span>  num_neurons<span class="op">=</span><span class="fl">2</span>, <span class="co"># number of neurons</span></span>
 <span>  warp<span class="op">=</span><span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="op">-</span><span class="va">x</span><span class="op">)</span> <span class="op">+</span> <span class="fl">1</span>, <span class="co"># negative spike</span></span>
 <span>  len_wavelet<span class="op">=</span><span class="fl">10</span>, <span class="co"># length of spikes</span></span>
@@ -103,7 +103,7 @@
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span>
 <span><span class="va">est</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/convNMF.html">convNMF</a></span><span class="op">(</span></span>
 <span>  data<span class="op">=</span><span class="va">init</span><span class="op">@</span><span class="va">data</span><span class="op">@</span><span class="va">value</span>, <span class="co"># multi-channel time-series array (NxT)</span></span>
-<span>  sample_freq<span class="op">=</span><span class="fl">1000</span>, <span class="co"># number of samples per unit time</span></span>
+<span>  sample_freq<span class="op">=</span><span class="fl">3000</span>, <span class="co"># number of samples per unit time</span></span>
 <span>  num_neurons<span class="op">=</span><span class="fl">2</span>, <span class="co"># number of neurons</span></span>
 <span>  len_wavelet<span class="op">=</span><span class="fl">10</span>, <span class="co"># length of spikes</span></span>
 <span>  warp<span class="op">=</span><span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="op">-</span><span class="va">x</span><span class="op">)</span> <span class="op">+</span> <span class="fl">1</span>, <span class="co"># negative spike</span></span>
@@ -120,7 +120,7 @@
 <span><span class="co">#&gt; Using (N x T) = (5 x 1000) data.</span></span>
 <span><span class="co">#&gt; Generating (K x N x D) = (2 x 5 x 10) wavelets.</span></span>
 <span><span class="co">#&gt; Initializing (K x T) = (2 x 1000) amplitudes.</span></span>
-<span><span class="co">#&gt; Iteration [4/50] Convergence detected!</span></span>
+<span><span class="co">#&gt; Iteration [3/50] Convergence detected!</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">est</span><span class="op">)</span></span></code></pre></div>
 <p><img src="getting-started_files/figure-html/unnamed-chunk-2-1.png" width="700"></p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
@@ -136,21 +136,21 @@
 <p><img src="getting-started_files/figure-html/unnamed-chunk-3-1.png" width="700"></p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"logLik = %.2f"</span>,<span class="fu"><a href="https://rdrr.io/r/stats/logLik.html" class="external-link">logLik</a></span><span class="op">(</span><span class="va">est</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "logLik = -7288.39"</span></span>
+<span><span class="co">#&gt; [1] "logLik = -7215.36"</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"%% power explained = %.2f"</span>,<span class="fu"><a href="../reference/power_explained.html">power_explained</a></span><span class="op">(</span><span class="va">est</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "% power explained = 0.42"</span></span>
+<span><span class="co">#&gt; [1] "% power explained = 0.14"</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Sequenciness = %.2f"</span>,<span class="fu"><a href="../reference/sequenciness.html">sequenciness</a></span><span class="op">(</span><span class="va">est</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "Sequenciness = 0.97"</span></span>
+<span><span class="co">#&gt; [1] "Sequenciness = 1.00"</span></span>
 <span><span class="fu"><a href="../reference/confusion_matrix.html">confusion_matrix</a></span><span class="op">(</span><span class="va">init</span>, <span class="va">est</span><span class="op">)</span></span>
 <span><span class="co">#&gt;                      (Prediction)</span></span>
 <span><span class="co">#&gt;                        Positive   Negative</span></span>
-<span><span class="co">#&gt; (Reference) Positive        410          0</span></span>
-<span><span class="co">#&gt;             Negative         36       4554</span></span>
+<span><span class="co">#&gt; (Reference) Positive        130          0</span></span>
+<span><span class="co">#&gt;             Negative          0       4870</span></span>
 <span><span class="co">#&gt; ------------------------------------------</span></span>
-<span><span class="co">#&gt;             Accuracy: TP/(TP+FN+FP) = 0.92 </span></span>
-<span><span class="co">#&gt;               Recall: TP/(TP+FN)    = 0.92 </span></span>
+<span><span class="co">#&gt;             Accuracy: TP/(TP+FN+FP) = 1.00 </span></span>
+<span><span class="co">#&gt;               Recall: TP/(TP+FN)    = 1.00 </span></span>
 <span><span class="co">#&gt;            Precision: TP/(TP+FP)    = 1.00 </span></span>
-<span><span class="co">#&gt;            Miss rate: FN/(TP+FN)    = 0.08 </span></span>
+<span><span class="co">#&gt;            Miss rate: FN/(TP+FN)    = 0.00 </span></span>
 <span><span class="co">#&gt; False discovery rate: FP/(TP+FP)    = 0.00</span></span>
 <span><span class="co"># extract_spikes(est) # based on 95% spikes</span></span></code></pre></div>
 </div>
@@ -164,11 +164,11 @@
 <span>  <span class="va">diss_list</span><span class="op">[</span><span class="va">K</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compute_diss_matrix.html">compute_diss_matrix</a></span><span class="op">(</span><span class="va">est</span>, num_neurons<span class="op">=</span><span class="va">K</span><span class="op">)</span><span class="op">$</span><span class="va">mean_diss</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"%d: %.2f"</span>,<span class="va">K</span>,<span class="va">diss_list</span><span class="op">[</span><span class="va">K</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
-<span><span class="co">#&gt; [1] "1: 0.00"</span></span>
-<span><span class="co">#&gt; [1] "2: 0.02"</span></span>
-<span><span class="co">#&gt; [1] "3: 0.22"</span></span>
-<span><span class="co">#&gt; [1] "4: 0.33"</span></span>
-<span><span class="co">#&gt; [1] "5: 0.43"</span></span>
+<span><span class="co">#&gt; [1] "1: 0.16"</span></span>
+<span><span class="co">#&gt; [1] "2: 0.06"</span></span>
+<span><span class="co">#&gt; [1] "3: 0.33"</span></span>
+<span><span class="co">#&gt; [1] "4: 0.47"</span></span>
+<span><span class="co">#&gt; [1] "5: 0.56"</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">diss_list</span>, type<span class="op">=</span><span class="st">"b"</span>, xlab<span class="op">=</span><span class="st">"K"</span>, ylab<span class="op">=</span><span class="st">"Dissimiliarity"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="getting-started_files/figure-html/unnamed-chunk-4-1.png" width="700"></p>
 </div>
