@@ -22,7 +22,7 @@ generate(
 
 \item{num_samples}{Number of time points.}
 
-\item{sample_freq}{Sampling frequency (Hz).}
+\item{sample_freq}{Sampling frequency.}
 
 \item{num_neurons}{Number of neurons to simulate.}
 

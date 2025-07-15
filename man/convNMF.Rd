@@ -25,7 +25,7 @@ convNMF(
 \arguments{
 \item{data}{Matrix of dimensions \code{num_channels} × \code{num_samples}.}
 
-\item{sample_freq}{Sampling frequency (Hz).}
+\item{sample_freq}{Sampling frequency.}
 
 \item{num_neurons}{Number of neurons to be fitted.}
 
@@ -48,6 +48,8 @@ convNMF(
 \item{num_iters}{Maximum number of MAP iterations.}
 
 \item{tol}{Convergence tolerance.}
+
+\item{weight_wavelets}{Renormalize and reorder wavelets}
 }
 \value{
 A fitted \code{\link{ConvNMF-class}} object.

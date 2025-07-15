@@ -8,7 +8,7 @@
 
 NULL
 
-# version 2025.07.01
+# version 2025.07.15
 #-----------------#
 # Data Generation #
 #-----------------#
@@ -55,7 +55,6 @@ generate_wavelets <- function(num_neurons, num_channels, len_wavelet,
   }
   # Reorder by spiking times
   wavelets_r <- new_wavelets[order(times),,,drop=FALSE]
-  # wavelets_r <- new_wavelets[order(times),sample(1:num_neurons,num_neurons),,drop=FALSE]
   wavelets <- new("Wavelets",
                   value=wavelets_r,
                   num_neurons=num_neurons, # K
@@ -73,7 +72,7 @@ generate_wavelets <- function(num_neurons, num_channels, len_wavelet,
 #'
 #' @param num_channels Number of channels (electrodes/tasks).
 #' @param num_samples Number of time points.
-#' @param sample_freq Sampling frequency (Hz).
+#' @param sample_freq Sampling frequency.
 #' @param num_neurons Number of neurons to simulate.
 #' @param len_wavelet Length of spatial wavelet (in samples).
 #' @param warp Function for time warping.
@@ -447,7 +446,7 @@ map_estimate_fast <- function(wavelets, amplitudes, data,
 #' Fits a convolutional NMF model to multi-channel time-series data using MAP estimation.
 #'
 #' @param data Matrix of dimensions \code{num_channels} × \code{num_samples}.
-#' @param sample_freq Sampling frequency (Hz).
+#' @param sample_freq Sampling frequency.
 #' @param num_neurons Number of neurons to be fitted.
 #' @param len_wavelet Length of spatial wavelet (in samples).
 #' @param warp Function for time warping.
@@ -459,6 +458,7 @@ map_estimate_fast <- function(wavelets, amplitudes, data,
 #' @param wavelet_rank SVD rank for wavelet decomposition.
 #' @param num_iters Maximum number of MAP iterations.
 #' @param tol Convergence tolerance.
+#' @param weight_wavelets Renormalize and reorder wavelets
 #'
 #' @return A fitted \code{\link{ConvNMF-class}} object.
 #' @export
@@ -520,9 +520,17 @@ convNMF <- function(data, # multi-channel time-series array (NxT)
     wavelets_r <- wavelets_r / weights
     
     # Re-order channels
-    new_channels <- unlist(apply(wavelets_r, 1, # per neuron
-                                 function(x) which(apply(x,1,max) > .1))) # channel max > .1
-    new_channels <- unique(c(new_channels, 1:dim(wavelets_r)[2]))
+    chMax <- apply(wavelets_r,1,function(x) apply(x,1,function(x) max(abs(x))))
+    # chMaxIdx <- which(chMax > .1, arr.ind=TRUE) # abs threshold
+    chMaxIdx <- which(chMax == apply(chMax,1, max), arr.ind=TRUE) # neuron max
+    new_channels <- as.data.frame(chMaxIdx) %>%
+      mutate(val=chMax[chMaxIdx]) %>%
+      arrange(col,-val) %>%
+      distinct(row) %>%
+      pull(row)
+    # new_channels <- unlist(apply(wavelets_r, 1, # per neuron
+    #                              function(x) which(apply(x,1,max) > .1))) # channel max > .1
+    # new_channels <- unique(c(new_channels, 1:dim(wavelets_r)[2]))
     new_channels <- rev(new_channels) # for plotting
     wavelets_r <- wavelets_r[,new_channels,]
     weights <- weights[,new_channels,]
