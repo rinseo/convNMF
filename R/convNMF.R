@@ -344,7 +344,7 @@ update_wavelet_factors <- function(neuron, footprints, profiles,
 map_estimate_fast <- function(wavelets, amplitudes, data,
                               noise_std=1.0, amp_rate=5.0, wavelet_rank=1, 
                               warp=function(x) -exp(-x)+1,
-                              num_iters=20, tol=1e-06, show_progress=TRUE){
+                              num_iters=20, tol=1e-04, show_progress=TRUE){
   # Fit the wavelets and amplitudes by maximum a posteriori (MAP) estimation
   K <- dim(wavelets)[1]
   N <- dim(wavelets)[2]
@@ -474,7 +474,7 @@ convNMF <- function(data, # multi-channel time-series array (NxT)
                     amp_rate=3, # detect amplitudes (amp_rate) times higher than SD
                     wavelet_rank=1, # Dimension reduction in SVD
                     num_iters=50, # number of iterations
-                    tol=1e-06, # tolerance level
+                    tol=1e-04, # tolerance level
                     weight_wavelets=FALSE, # renormalize and reorder wavelets
                     show_progress=TRUE # show progress bar
 ){

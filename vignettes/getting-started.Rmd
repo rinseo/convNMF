@@ -18,7 +18,7 @@ library(convNMF)
 set.seed(1)
 init <- generate(
   num_channels=5, # number of channels
-  num_samples=1000, # number of samples
+  num_samples=1500, # number of samples
   sample_freq=3000, # number of samples per unit time
   num_neurons=2, # number of neurons
   warp=function(x) -exp(-x) + 1, # negative spike

@@ -17,7 +17,7 @@ convNMF(
   amp_rate = 3,
   wavelet_rank = 1,
   num_iters = 50,
-  tol = 1e-06,
+  tol = 1e-04,
   weight_wavelets = FALSE,
   show_progress = TRUE
 )
