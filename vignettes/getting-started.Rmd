@@ -18,8 +18,8 @@ library(convNMF)
 set.seed(1)
 init <- generate(
   num_channels=5, # number of channels
-  num_samples=1500, # number of samples
-  sample_freq=3000, # number of samples per unit time
+  num_samples=1000, # number of samples
+  sample_freq=1000, # number of samples per unit time
   num_neurons=2, # number of neurons
   warp=function(x) -exp(-x) + 1, # negative spike
   len_wavelet=10, # length of spikes
@@ -41,7 +41,7 @@ plot(init)
 set.seed(1)
 est <- convNMF(
   data=init@data@value, # multi-channel time-series array (NxT)
-  sample_freq=3000, # number of samples per unit time
+  sample_freq=1000, # number of samples per unit time
   num_neurons=2, # number of neurons
   len_wavelet=10, # length of spikes
   warp=function(x) -exp(-x) + 1, # negative spike
